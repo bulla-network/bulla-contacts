@@ -6,8 +6,8 @@ Save Web3 contacts and reuse across multiple dApps. Stored and encrypted with Ce
 
 ## Get started 
 
-`npm install @bulla/contacts`
-`yarn add @bulla/contacts`
+`npm install @bulla-network/contacts`
+`yarn add @bulla-network/contacts`
 
 ## Provider components
 
