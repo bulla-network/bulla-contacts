@@ -11,11 +11,11 @@ declare global {
 }
 
 const SelfIdContext = React.createContext<SelfIdContext>('init');
-type SelfIdProviderProps = { children: React.ReactNode; userAddress: string; chainId: number; notSupported: boolean; env: 'mainnet' | 'testnet' };
+type SelfIdProviderProps = { children: React.ReactNode; userAddress: string; notSupported: boolean; env: 'mainnet' | 'testnet' };
 
-export const SelfIdProvider = ({ children, userAddress, chainId, notSupported, env }: SelfIdProviderProps) => {
+export const SelfIdProvider = ({ children, userAddress, notSupported, env }: SelfIdProviderProps) => {
     const [selfId, setSelfId] = useState<SelfIdContext>(notSupported ? 'not-supported' : 'init');
-    const storageKey = `${userAddress}:${chainId}:selfIdEnabled`;
+    const storageKey = `${userAddress}:selfIdEnabled`;
     const ceramicEnv = envs[env];
 
     const disabledState = {
