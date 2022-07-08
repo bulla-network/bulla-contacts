@@ -29,9 +29,9 @@ Example:
 
 ```
 const App = () => {
-	const {userAddress, chainId} = useWeb3(); // not included, SelfIdProvider needs wallet and network.
+	const {userAddress} = useWeb3(); // not included, SelfIdProvider needs wallet and network.
 	return (
-		<SelfIdProvider userAddress={userAddress} chainId={chainId} notSupported={false} env="mainnet">
+		<SelfIdProvider userAddress={userAddress} notSupported={false} env="mainnet">
 			<ContactsProvider  userAddress={userAddress}>
 				<YourAppHere />
 			</ContactsProvider>
