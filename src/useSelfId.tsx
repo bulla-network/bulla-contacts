@@ -14,14 +14,13 @@ const SelfIdContext = React.createContext<SelfIdContext>('init');
 type SelfIdProviderProps = { children: React.ReactNode; userAddress: string; notSupported: boolean; env: 'mainnet' | 'testnet' };
 
 export const SelfIdProvider = ({ children, userAddress, notSupported, env }: SelfIdProviderProps) => {
-    const [selfId, setSelfId] = useState<SelfIdContext>(notSupported ? 'not-supported' : 'init');
+    const [selfId, setSelfId] = useState<SelfIdContext | 'init-bypass-enabled-check'>(notSupported ? 'not-supported' : 'init');
     const storageKey = `${userAddress}:selfIdEnabled`;
     const ceramicEnv = envs[env];
 
     const disabledState = {
         enableSelfId: () => {
-            setLocalStorage(storageKey, true);
-            setSelfId('init');
+            setSelfId('init-bypass-enabled-check');
         },
     };
 
@@ -36,6 +35,7 @@ export const SelfIdProvider = ({ children, userAddress, notSupported, env }: Sel
             });
 
             setSelfId(selfId);
+            setLocalStorage(storageKey, true);
         } catch (e) {
             setSelfId('failed');
             console.error(e);
@@ -43,14 +43,14 @@ export const SelfIdProvider = ({ children, userAddress, notSupported, env }: Sel
     }
 
     useEffect(() => {
-        if (selfId == 'init') {
-            if (!getLocalStorage<boolean>(storageKey)) {
+        if (selfId == 'init' || selfId == 'init-bypass-enabled-check') {
+            if (selfId == 'init' && !getLocalStorage<boolean>(storageKey)) {
                 setSelfId(disabledState);
             } else authenticate();
         }
-    }, [userAddress, selfId == 'init']);
+    }, [userAddress, selfId]);
 
-    return <SelfIdContext.Provider value={selfId}>{children}</SelfIdContext.Provider>;
+    return <SelfIdContext.Provider value={selfId == 'init-bypass-enabled-check' ? 'connecting' : selfId}>{children}</SelfIdContext.Provider>;
 };
 
 export const useSelfId: () => {
