@@ -1,6 +1,6 @@
 {
   "name": "@bulla-network/contacts",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Web3 contacts",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

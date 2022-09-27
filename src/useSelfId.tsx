@@ -1,8 +1,8 @@
 import { ConnectNetwork, EthereumAuthProvider, SelfID } from '@self.id/web';
 import React, { useEffect, useState } from 'react';
 import * as envs from '../env.json';
-import { DisabledState, isSelfIdDisabled, SelfIdContext } from './selfId';
-import { setLocalStorage, getLocalStorage } from './localStorage';
+import { getLocalStorage, setLocalStorage } from './localStorage';
+import { DisabledState, isSelfIdDisabled, isSelfIdFailed, SelfIdContext } from './selfId';
 
 declare global {
     interface Window {
@@ -18,7 +18,8 @@ export const SelfIdProvider = ({ children, userAddress, notSupported, env }: Sel
     const storageKey = `${userAddress}:selfIdEnabled`;
     const ceramicEnv = envs[env];
 
-    const disabledState = {
+    const disabledState: DisabledState = {
+        __type: 'disabled',
         enableSelfId: () => {
             setSelfId('init-bypass-enabled-check');
         },
@@ -37,7 +38,7 @@ export const SelfIdProvider = ({ children, userAddress, notSupported, env }: Sel
             setSelfId(selfId);
             setLocalStorage(storageKey, true);
         } catch (e) {
-            setSelfId('failed');
+            setSelfId({__type: 'failed', retry: () => setSelfId('init')});
             console.error(e);
         }
     }
@@ -66,7 +67,7 @@ export const useSelfId: () => {
     return {
         selfId,
         isConnecting,
-        isFailed: selfId == 'failed',
+        isFailed: isSelfIdFailed(selfId),
         enabledState,
     };
 };
